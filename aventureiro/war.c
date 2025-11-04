@@ -15,6 +15,27 @@ typedef struct
     int tropas;
 } Territorio;
 
+// Função para alocar dinamicamente os territórios
+Territorio* alocarTerritorios(int num_territorios)
+{
+    // Usando calloc para inicializar a memória com zeros
+    Territorio *territorios = (Territorio *)calloc(num_territorios, sizeof(Territorio));
+    
+    printf("Memoria alocada com sucesso para %d territorios.\n", num_territorios);
+    
+    return territorios;
+}
+
+// Função para liberar a memória alocada
+void liberarTerritorios(Territorio *territorios)
+{
+    if (territorios != NULL)
+    {
+        free(territorios);
+        printf("Memoria liberada com sucesso.\n");
+    }
+}
+
 // Limpa o buffer de entrada
 void limparBuffer()
 {
@@ -139,7 +160,7 @@ int validarEscolha(int atacante_idx, int defensor_idx, const Territorio *territo
     // Verifica se o atacante tem tropas suficientes
     if (!podeAtacar(atacante))
     {
-        printf("Erro: %s precisa de pelo menos 2 tropas para atacar!\n", atacante->nome);
+        printf("Erro: %s precisa de pelo menos 1 tropas para atacar!\n", atacante->nome);
         return 0;
     }
 
@@ -218,7 +239,10 @@ int main()
     // Inicializa o gerador de números aleatórios
     srand(time(NULL));
 
-    Territorio territorios[NUM_TERRITORIOS];
+    Territorio *territorios = NULL;
+
+    // Aloca memória dinamicamente para os territórios
+    territorios = alocarTerritorios(NUM_TERRITORIOS);
 
     printf("=== CONFIGURACAO DO JOGO ===\n\n");
 
@@ -256,6 +280,8 @@ int main()
 
     novaPartida(territorios);
 
-    printf("\nFim de jogo!!\n");
+    liberarTerritorios(territorios);
+    
+    printf("\nObrigado por jogar!\n");
     return 0;
 }
